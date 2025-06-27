@@ -1,69 +1,183 @@
-/* ディスプレイのスタイル */
-.display {
-	border: 1px solid #333; /* 枠線 */
-	width: 200px; /* 横幅を指定 */
-	height: 50px; /* 高さを指定 */
-	margin-bottom: 10px; /* 下に10pxの余白を設ける */
-	line-height: 50px; /* 文字を上下中央に配置するためのテクニック */
-	text-align: right; /* 文字を右揃えにする */
-	overflow: hidden; /* はみ出した文字を隠す */
-    padding: 0 10px; /* 左右に10pxの余白を追加 */
-    background-color: #e0e0e0; /* 背景色 */
-    font-size: 24px; /* 文字サイズ */
-    border-radius: 5px; /* 角を少し丸める */
+/* 電卓のスタイル */
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-/* ボタン全体のコンテナ */
-.box {
-	width: 200px;
-	display: flex; /* Flexboxレイアウトを適用。子要素を横に並べる */
-	flex-wrap: wrap; /* 要素がコンテナに収まらない場合に折り返して、複数行にする */
+table {
+  background: #1a1a1a;
+  border-radius: 20px;
+  border-collapse: separate;
+  border-spacing: 5px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  margin: 0;
+  border: none;
+  width: 400px;
+  table-layout: fixed;
 }
 
-/* 全てのボタンに共通のスタイル */
-.switch, .switch_dummy, .reset, .result, .calculation {
-	height: 50px;
-	line-height: 50px; /* 文字を上下中央に */
-	text-align: center; /* 文字を左右中央に */
-	border: 1px solid #ccc;
-	box-sizing: border-box; /* borderやpaddingを幅・高さに含めて計算する */
-	cursor: pointer; /* マウスカーソルを指の形にする */
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    margin: 1px; /* ボタン間に少し隙間を作る */
-    width: calc(25% - 2px); /* 4列に均等配置し、margin分を引く */
-}
-/* ボタンにマウスが乗った時のスタイル */
-.switch:hover, .reset:hover, .result:hover, .calculation:hover {
-    background-color: #ddd;
-}
-
-/* 演算子ボタンとイコールボタンの色を少し変える */
-.calculation, .result {
-    background-color: #ff9f43;
-    color: white;
-}
-.calculation:hover, .result:hover {
-    background-color: #e68a2e;
+/* ディスプレイ部分 */
+#display td {
+  background: #000;
+  color: #fff;
+  text-align: right;
+  font-size: 30px;
+  font-weight: 300;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  min-height: 100px;
+  max-height: 100px;
+  vertical-align: middle;
+  border: 2px solid #333;
+  width: 100%;
+  height: 35px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* ACボタンの色を少し変える */
-.reset {
-    background-color: #a5a5a5;
-    color: white;
-}
-.reset:hover {
-    background-color: #8b8b8b;
+/* ボタン行 */
+.buttons td {
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  min-height: 80px;
+  max-height: 80px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  border: 2px solid #333;
+  margin: 2px;
 }
 
+/* 通常のボタン（数字） */
+.button {
+  background: linear-gradient(145deg, #f0f0f0, #d1d1d1);
+  color: #333;
+  border-radius: 15px;
+}
 
-/* 電卓アプリ全体のコンテナ */
-.calc_app {
-	border: 1px solid #ccc;
-	padding: 10px;
-	position: fixed; /* 画面上の絶対位置に配置（後の移動機能で利用） */
-	text-align: center;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 影をつけて立体感を出す */
+.button:hover {
+  background: linear-gradient(145deg, #e0e0e0, #c1c1c1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 演算子ボタン */
+.button:last-child {
+  background: linear-gradient(145deg, #ff6b35, #ff5722);
+  color: white;
+}
+
+.button:last-child:hover {
+  background: linear-gradient(145deg, #ff5722, #e64a19);
+}
+
+/* AC（All Clear）ボタン */
+tr:nth-child(2) .button:first-child {
+  background: linear-gradient(145deg, #ff4444, #cc0000);
+  color: white;
+}
+
+tr:nth-child(2) .button:first-child:hover {
+  background: linear-gradient(145deg, #cc0000, #990000);
+}
+
+/* Del（Delete）ボタン */
+tr:nth-child(2) .button:nth-child(2) {
+  background: linear-gradient(145deg, #ffaa00, #ff8800);
+  color: white;
+}
+
+tr:nth-child(2) .button:nth-child(2):hover {
+  background: linear-gradient(145deg, #ff8800, #ff6600);
+}
+
+/* ()（括弧）ボタン */
+tr:nth-child(2) .button:nth-child(3) {
+  background: linear-gradient(145deg, #9c27b0, #7b1fa2);
+  color: white;
+}
+
+tr:nth-child(2) .button:nth-child(3):hover {
+  background: linear-gradient(145deg, #7b1fa2, #6a1b9a);
+}
+
+/* 演算子ボタン（+, -, *, /） */
+tr .button:last-child {
+  background: linear-gradient(145deg, #4caf50, #45a049);
+  color: white;
+}
+
+tr .button:last-child:hover {
+  background: linear-gradient(145deg, #45a049, #3e8e41);
+}
+
+/* = ボタン */
+tr:last-child .button:last-child {
+  background: linear-gradient(145deg, #2196f3, #1976d2);
+  color: white;
+}
+
+tr:last-child .button:last-child:hover {
+  background: linear-gradient(145deg, #1976d2, #1565c0);
+}
+
+/* +/- ボタン */
+tr:last-child .button:first-child {
+  background: linear-gradient(145deg, #9c27b0, #7b1fa2);
+  color: white;
+}
+
+tr:last-child .button:first-child:hover {
+  background: linear-gradient(145deg, #7b1fa2, #6a1b9a);
+}
+
+/* 0ボタンと.ボタンの特別なスタイル */
+tr:last-child .button:nth-child(2),
+tr:last-child .button:nth-child(3) {
+  background: linear-gradient(145deg, #f0f0f0, #d1d1d1);
+  color: #333;
+}
+
+tr:last-child .button:nth-child(2):hover,
+tr:last-child .button:nth-child(3):hover {
+  background: linear-gradient(145deg, #e0e0e0, #c1c1c1);
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 480px) {
+  table {
+    padding: 15px;
+  }
+
+  .buttons td {
+    width: 60px;
+    height: 60px;
+    font-size: 18px;
+  }
+
+  #display td {
+    font-size: 28px;
+    padding: 15px;
+    min-height: 40px;
+  }
 }

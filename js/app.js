@@ -1,84 +1,182 @@
-// --- 1. HTML要素の取得 ---
-// まずは操作したいHTML要素をすべて取得して、変数に入れておく
-const display = document.querySelector('.display'); // 計算結果を表示する画面
-const switches = document.querySelectorAll('.switch');
-const calculations = document.querySelectorAll('.calculation');
-const resets = document.querySelectorAll('.reset');
-const results = document.querySelectorAll('.result');
-
-// 計算の状態を管理するための変数を初期化します。
-let currentInput = "0"; // 現在ディスプレイに表示されている入力値。最初は"0"。
-let operator = "";      // 選択された演算子 (+, -, *, /)。最初は空。
-let left = null;        // 計算式の左辺の値。最初は未定なのでnull。
-let right = null;       // 計算式の右辺の値。最初は未定なのでnull。
-let isDot = false;      // 小数点がすでに入力されているかどうかのフラグ。
-let isWaitingForSecondOperand = false; // 演算子が押され、2つ目の数値入力を待っている状態かどうかのフラグ。
+/**
+ * 電卓アプリケーション
+ * 基本的な四則演算、プラスマイナス切り替え、削除機能を提供
+ */
 
 /**
- * ディスプレイの表示を更新する関数
- * @param {string | number} value 表示したい値
+ * ディスプレイに結果を表示する関数
+ * @param {string|number} result - 表示する値
+ * @param {boolean} calc - 計算結果かどうか（trueの場合は既存の内容をクリア）
  */
-function updateDisplay(value) {
-    display.textContent = value;
-}
+const display = (result, calc = false) => {
+  const display = document.querySelector("#display td");
+  let text = display.textContent;
+
+  // 空の値の場合は何もしない
+  if (result === "0" || result === "" || result === null) {
+    return;
+  }
+
+  // すでに小数点が含まれている場合は何もしない
+  if (result.includes(".")) {
+    if (text.includes(".")) {
+      return;
+    }
+  }
+
+  // 計算結果の場合は既存の内容をクリアして新しい値を設定
+  if (calc) {
+    display.textContent = "";
+    display.textContent = result;
+    return;
+  }
+
+  // 通常の入力処理
+  if (text === "") {
+    // ディスプレイが空の場合はそのまま設定
+    display.textContent = result;
+  } else if (text !== "" && (result === "+" || result === "-" || result === "*" || result === "/")) {
+    // 演算子の場合はスペースで囲んで追加
+    display.textContent += " " + result + " ";
+  } else {
+    // 数字の場合はそのまま追加
+    if (text === "0" && result !== ".") {
+      // ディスプレイが0の場合は新しい値で上書き
+      display.textContent = result;
+    } else {
+      display.textContent += result;
+    }
+  }
+};
 
 /**
- * オールクリア（AC）処理を行う関数
- * すべての計算状態を初期値に戻します。
+ * 計算を実行する関数
+ * @param {string} expression - 計算式（例: "10 + 5"）
  */
-function clearAll() {
-    currentInput = "0";
-    operator = "";
-    left = null;
-    right = null;
-    isWaitingForSecondOperand = false;
-    isDot = false;
-    updateDisplay("0"); // ディスプレイも"0"に戻す
-}
+const calculate = (expression) => {
+  try {
+    // eval()を使用して計算式を評価
+    const result = eval(expression);
 
-// 最初に画面が表示されたとき、ディスプレイに初期値 "0" を表示する
-updateDisplay(currentInput);
+    // 小数点以下の桁数を制限（15桁まで表示）
+    let formattedResult;
+    if (Number.isInteger(result)) {
+      // 整数の場合はそのまま文字列に変換
+      formattedResult = result.toString();
+    } else {
+      // 小数の場合は15桁に制限し、末尾の0を削除
+      formattedResult = parseFloat(result.toFixed(15)).toString();
+    }
 
-// forEachを使って、取得したボタンのリストそれぞれにクリックイベントを設定していく
+    // 計算結果をディスプレイに表示
+    display(formattedResult, true);
+  } catch (error) {
+    // エラーが発生した場合は"Error"を表示
+    display("Error", true);
+  }
+};
 
-// 数字ボタンの処理
-switches.forEach(function (button) {
-    button.addEventListener('click', function (e) {
-        const value = e.target.textContent; // クリックされたボタンのテキストを取得
-        if (currentInput === "0" && value !== ".") {
-            // 入力が"0"だけの時に、"."以外の数字が押されたら、上書き
-            currentInput = value;
-        }else if (value === ".") {
-            // 小数点が押された場合
-            if (!isDot) { // まだ小数点が入力されていなければ
-                currentInput += value; // 追記し、
-                isDot = true;          // 小数点が入力されたことを記録する
-            }
-        }else{
-            currentInput += value; // 追記し、
+/**
+ * ボタンクリック時のイベントハンドラー
+ * @param {Event} e - クリックイベント
+ */
+const onClickButton = (e) => {
+  const button = e.target;
+  const value = button.textContent;
+
+  // ボタンの種類に応じて処理を分岐
+  switch (value) {
+    case "AC":
+      // All Clear: ディスプレイをクリア
+      document.querySelector("#display td").textContent = "0";
+      return;
+
+    case "=":
+      // 等号: 計算を実行
+      const expression = document.querySelector("#display td").textContent;
+      calculate(expression);
+      return;
+
+    case "del":
+      // Delete: 最後の文字または演算子を削除
+      const displayCell = document.querySelector("#display td");
+      let current = displayCell.textContent.trimEnd();
+
+      // 演算子（スペース付き）で終わっている場合は3文字削除（" + "など）
+      if (current.endsWith(" +") || current.endsWith(" -") || current.endsWith(" *") || current.endsWith(" /")) {
+        displayCell.textContent = current.slice(0, -2).trimEnd();
+      } else {
+        // 通常の文字の場合は1文字削除
+        displayCell.textContent = current.slice(0, -1);
+      }
+      return;
+
+    case "()":
+      // 括弧の自動切り替え: (と)のバランスを見て適切な方を入力
+      const currentText = document.querySelector("#display td").textContent;
+
+      // 開き括弧と閉じ括弧の数をカウント
+      const openCount = (currentText.match(/\(/g) || []).length;
+      const closeCount = (currentText.match(/\)/g) || []).length;
+
+      // 開き括弧の方が多い、または同数の場合は閉じ括弧を入力
+      // そうでなければ開き括弧を入力
+      if (openCount > closeCount) {
+        display(")");
+      } else {
+        display("(");
+      }
+      return;
+
+    case "+/-":
+      // プラスマイナス切り替え
+      const currentValue = document.querySelector("#display td").textContent;
+
+      // 四則演算記号で分割して最後の部分を取得
+      // 正規表現で演算子とその前後のスペースをキャプチャ
+      const parts = currentValue.split(/(\s[\+\-\*\/]\s)/);
+
+      if (parts.length > 1) {
+        // 四則演算がある場合、最後の数字のプラスマイナスを切り替え
+        const lastNumber = parts[parts.length - 1].trim();
+        let newLastNumber;
+
+        if (lastNumber.startsWith("-")) {
+          // マイナスの場合はプラスに変更（マイナス記号を削除）
+          newLastNumber = lastNumber.slice(1);
+        } else if (lastNumber !== "") {
+          // プラスの場合はマイナスに変更（マイナス記号を追加）
+          newLastNumber = "-" + lastNumber;
+        } else {
+          // 空の場合はそのまま
+          newLastNumber = lastNumber;
         }
-        updateDisplay(currentInput); // 画面を更新
-        console.log('数字ボタン:', e.target.textContent);
-    });
-});
-// 演算子ボタンの処理
-calculations.forEach(function (button) {
-    button.addEventListener('click', function (e) {
-        console.log('演算子ボタン:', e.target.textContent);
-    });
-});
 
-// ACボタンの処理
-resets.forEach(function (button) {
-    button.addEventListener('click', function () {
-        clearAll();
-        console.log('ACボタンが押されました');
-    });
-});
+        // 分割した配列の最後の部分を更新して結合
+        parts[parts.length - 1] = newLastNumber;
+        display(parts.join(""), true);
+      } else {
+        // 四則演算がない場合、全体のプラスマイナスを切り替え
+        if (currentValue.startsWith("-")) {
+          // マイナスの場合はプラスに変更
+          display(currentValue.slice(1), true);
+        } else {
+          // プラスの場合はマイナスに変更
+          display("-" + currentValue, true);
+        }
+      }
+      return;
+  }
 
-// =ボタンの処理
-results.forEach(function (button) {
-    button.addEventListener('click', function () {
-        console.log('=ボタンが押されました');
-    });
+  // 上記以外のボタン（数字や演算子）の場合は通常の入力処理
+  display(value);
+};
+
+/**
+ * 初期化処理
+ * 全ての電卓ボタンにクリックイベントリスナーを設定
+ */
+const buttons = document.querySelectorAll(".button");
+buttons.forEach((button) => {
+  button.addEventListener("click", onClickButton);
 });
