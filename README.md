@@ -1,4 +1,8 @@
 # OIC2025-Front03
+動きを試す。
+https://jun1waka.github.io/OIC2025-Front03/
+
+
 電卓を作る
 * 電卓のボタンを押すと表示窓に数値が表示される
 * 四則演算を実行
