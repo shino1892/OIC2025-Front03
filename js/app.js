@@ -1,11 +1,44 @@
 // --- 1. HTML要素の取得 ---
 // まずは操作したいHTML要素をすべて取得して、変数に入れておく
+const display = document.querySelector('.display'); // 計算結果を表示する画面
 const switches = document.querySelectorAll('.switch');
 const calculations = document.querySelectorAll('.calculation');
 const resets = document.querySelectorAll('.reset');
 const results = document.querySelectorAll('.result');
 
-// --- 2. イベントリスナーの設定 ---
+// 計算の状態を管理するための変数を初期化します。
+let currentInput = "0"; // 現在ディスプレイに表示されている入力値。最初は"0"。
+let operator = "";      // 選択された演算子 (+, -, *, /)。最初は空。
+let left = null;        // 計算式の左辺の値。最初は未定なのでnull。
+let right = null;       // 計算式の右辺の値。最初は未定なのでnull。
+let isDot = false;      // 小数点がすでに入力されているかどうかのフラグ。
+let isWaitingForSecondOperand = false; // 演算子が押され、2つ目の数値入力を待っている状態かどうかのフラグ。
+
+/**
+ * ディスプレイの表示を更新する関数
+ * @param {string | number} value 表示したい値
+ */
+function updateDisplay(value) {
+    display.textContent = value;
+}
+
+/**
+ * オールクリア（AC）処理を行う関数
+ * すべての計算状態を初期値に戻します。
+ */
+function clearAll() {
+    currentInput = "0";
+    operator = "";
+    left = null;
+    right = null;
+    isWaitingForSecondOperand = false;
+    isDot = false;
+    updateDisplay("0"); // ディスプレイも"0"に戻す
+}
+
+// 最初に画面が表示されたとき、ディスプレイに初期値 "0" を表示する
+updateDisplay(currentInput);
+
 // forEachを使って、取得したボタンのリストそれぞれにクリックイベントを設定していく
 
 // 数字ボタンの処理
@@ -24,6 +57,7 @@ calculations.forEach(function (button) {
 // ACボタンの処理
 resets.forEach(function (button) {
     button.addEventListener('click', function () {
+        clearAll();
         console.log('ACボタンが押されました');
     });
 });
