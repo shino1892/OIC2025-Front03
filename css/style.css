@@ -1,0 +1,69 @@
+/* ディスプレイのスタイル */
+.display {
+	border: 1px solid #333; /* 枠線 */
+	width: 200px; /* 横幅を指定 */
+	height: 50px; /* 高さを指定 */
+	margin-bottom: 10px; /* 下に10pxの余白を設ける */
+	line-height: 50px; /* 文字を上下中央に配置するためのテクニック */
+	text-align: right; /* 文字を右揃えにする */
+	overflow: hidden; /* はみ出した文字を隠す */
+    padding: 0 10px; /* 左右に10pxの余白を追加 */
+    background-color: #e0e0e0; /* 背景色 */
+    font-size: 24px; /* 文字サイズ */
+    border-radius: 5px; /* 角を少し丸める */
+}
+
+/* ボタン全体のコンテナ */
+.box {
+	width: 200px;
+	display: flex; /* Flexboxレイアウトを適用。子要素を横に並べる */
+	flex-wrap: wrap; /* 要素がコンテナに収まらない場合に折り返して、複数行にする */
+}
+
+/* 全てのボタンに共通のスタイル */
+.switch, .switch_dummy, .reset, .result, .calculation {
+	height: 50px;
+	line-height: 50px; /* 文字を上下中央に */
+	text-align: center; /* 文字を左右中央に */
+	border: 1px solid #ccc;
+	box-sizing: border-box; /* borderやpaddingを幅・高さに含めて計算する */
+	cursor: pointer; /* マウスカーソルを指の形にする */
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin: 1px; /* ボタン間に少し隙間を作る */
+    width: calc(25% - 2px); /* 4列に均等配置し、margin分を引く */
+}
+/* ボタンにマウスが乗った時のスタイル */
+.switch:hover, .reset:hover, .result:hover, .calculation:hover {
+    background-color: #ddd;
+}
+
+/* 演算子ボタンとイコールボタンの色を少し変える */
+.calculation, .result {
+    background-color: #ff9f43;
+    color: white;
+}
+.calculation:hover, .result:hover {
+    background-color: #e68a2e;
+}
+
+/* ACボタンの色を少し変える */
+.reset {
+    background-color: #a5a5a5;
+    color: white;
+}
+.reset:hover {
+    background-color: #8b8b8b;
+}
+
+
+/* 電卓アプリ全体のコンテナ */
+.calc_app {
+	border: 1px solid #ccc;
+	padding: 10px;
+	position: fixed; /* 画面上の絶対位置に配置（後の移動機能で利用） */
+	text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 影をつけて立体感を出す */
+}
