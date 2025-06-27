@@ -44,6 +44,20 @@ updateDisplay(currentInput);
 // 数字ボタンの処理
 switches.forEach(function (button) {
     button.addEventListener('click', function (e) {
+        const value = e.target.textContent; // クリックされたボタンのテキストを取得
+        if (currentInput === "0" && value !== ".") {
+            // 入力が"0"だけの時に、"."以外の数字が押されたら、上書き
+            currentInput = value;
+        }else if (value === ".") {
+            // 小数点が押された場合
+            if (!isDot) { // まだ小数点が入力されていなければ
+                currentInput += value; // 追記し、
+                isDot = true;          // 小数点が入力されたことを記録する
+            }
+        }else{
+            currentInput += value; // 追記し、
+        }
+        updateDisplay(currentInput); // 画面を更新
         console.log('数字ボタン:', e.target.textContent);
     });
 });
