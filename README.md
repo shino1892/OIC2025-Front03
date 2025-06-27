@@ -1,6 +1,6 @@
 # OIC2025-Front03
 動きを試す。
-https://jun1waka.github.io/OIC2025-Front03/
+https://shino1892.github.io/OIC2025-Front03/
 
 
 電卓を作る
